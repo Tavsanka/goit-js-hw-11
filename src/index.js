@@ -39,6 +39,11 @@ const loadMoreButton = document.querySelector('.load-more');
 let currentPage = 1;
 let currentQuery = '';
 
+const lightbox = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+  captionDelay: 250,
+});
+
 // Obsługa formularza wyszukiwania
 form.addEventListener('submit', event => {
   event.preventDefault();
@@ -55,7 +60,15 @@ form.addEventListener('submit', event => {
       images.forEach(image => {
         gallery.innerHTML += createImageCard(image); // Dodaj nowe obrazy
       });
-      loadMoreButton.style.display = 'block'; // Pokaż przycisk "Load more"
+
+      // Po dodaniu nowych obrazków, odśwież SimpleLightbox
+      lightbox.refresh();
+
+      if (images.length >= 40) {
+        loadMoreButton.style.display = 'block'; // Pokaz przycisk "Load more"
+      } else {
+        loadMoreButton.style.display = 'none'; // Ukryj, jeśli mniej niż 40
+      }
     } else {
       console.warn('No images found.');
     }
@@ -79,39 +92,21 @@ const createImageCard = image => {
   `;
 };
 
-const lightbox = new SimpleLightbox('.gallery a', {
-  captionsData: 'alt',
-  captionDelay: 250,
-});
-
-// Odświeżenie SimpleLightbox po dodaniu nowej grupy kart obrazów
-lightbox.refresh();
-
 // Obsługa przycisku "Load more"
 loadMoreButton.addEventListener('click', () => {
   currentPage += 1; // Zwiększ paginację
 
   fetchImages(currentQuery, currentPage).then(images => {
     images.forEach(image => {
-      gallery.innerHTML += createImageCard(image); // Dodaj kolejne obrazy
+      gallery.insertAdjacentHTML('beforeend', createImageCard(image)); // Dodaj kolejne obrazy
     });
 
+    // Odświeżenie SimpleLightbox po dodaniu nowej grupy kart obrazów
+    lightbox.refresh();
+
     if (images.length < 40) {
-      // Jeśli mniej niż 40 obrazów, ukryj przycisk
-      loadMoreButton.style.display = 'none';
+      loadMoreButton.style.display = 'none'; // Ukryj, gdy osiągniesz koniec wyników
       Notify.info("We're sorry, but you've reached the end of search results.");
     }
   });
 });
-
-const firstElement = document.querySelector('.gallery').firstElementChild;
-
-if (firstElement) {
-  const { height: cardHeight } = firstElement.getBoundingClientRect();
-  window.scrollBy({
-    top: cardHeight * 2,
-    behavior: 'smooth',
-  });
-} else {
-  console.warn('Element nie został znaleziony');
-}
