@@ -4,14 +4,12 @@
 }
 
 .gallery {
+  position: relative;
+  overflow: visible;
   display: grid;
-  max-width: 1140px;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  grid-auto-rows: 240px;
-  grid-gap: 12px;
-  justify-content: center;
-  margin-left: auto;
-  margin-right: auto;
+  grid-template-columns: repeat(4, 1fr); /* Cztery kolumny */
+  gap: 12px; /* Odstęp między elementami */
+  padding: 20px;
 }
 
 .photo-card {
