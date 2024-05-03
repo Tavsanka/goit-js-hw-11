@@ -51,7 +51,7 @@ form.addEventListener('submit', event => {
 
   fetchImages(searchQuery, currentPage).then(images => {
     if (images && images.length > 0) {
-      gallery.innerHTML = ''; // Wyczyść galerię
+      gallery.innerHTML = ''; // Czysci galerię
       images.forEach(image => {
         gallery.innerHTML += createImageCard(image); // Dodaj nowe obrazy
       });
@@ -83,7 +83,6 @@ const lightbox = new SimpleLightbox('.gallery a', {
   captionsData: 'alt',
   captionDelay: 250,
 });
-console.log(galleryItems);
 
 // Odświeżenie SimpleLightbox po dodaniu nowej grupy kart obrazów
 lightbox.refresh();
